@@ -69,7 +69,9 @@ export default function HeroSection() {
       setTimeout(() => setNameVisible(true), 400);
     };
     document.head.appendChild(script);
-    return () => document.head.removeChild(script);
+    return () => {
+      document.head.removeChild(script);
+    };
   }, []);
 
   useEffect(() => {
@@ -113,11 +115,9 @@ export default function HeroSection() {
         .anime-line { opacity: 0; position: absolute; left: 0; height: 100%; width: 3px; transform-origin: 0 50%; background: linear-gradient(to bottom, #d4b896, #4a9ebb); box-shadow: 0 0 10px rgba(74,158,187,0.6); }
       `}</style>
 
-      {/* Overlays */}
       <div className="absolute inset-0 bg-[#060d14] opacity-40" />
       <div className="absolute bottom-0 left-0 right-0 h-[40%] bg-gradient-to-t from-[#060d14] to-transparent pointer-events-none" />
 
-      {/* Single-line "Hi, I'm Soumya Jain." */}
       <motion.div
         className="absolute z-20 flex flex-col items-start"
         style={{ opacity: nameVisible ? 1 - scrollProgress * 2 : 0 }}
@@ -139,11 +139,10 @@ export default function HeroSection() {
           className="mt-3 text-[#4a5568] text-sm tracking-[0.2em] uppercase"
           style={{ opacity: 1 - scrollProgress * 3 }}
         >
-          scroll to explore ↓
+          scroll to explore
         </motion.p>
       </motion.div>
 
-      {/* Expanding video box */}
       {nameVisible && (
         <div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 overflow-hidden transition-none"
@@ -252,7 +251,6 @@ export default function HeroSection() {
         </div>
       )}
 
-      {/* Scroll indicator */}
       <div
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20"
         style={{ opacity: 1 - scrollProgress * 3 }}
