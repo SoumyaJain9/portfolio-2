@@ -1,6 +1,5 @@
 /**
- * Refactored to ES6 Classes to satisfy TypeScript strict mode 
- * and Next.js production build requirements.
+ * Refactored to ES6 Classes with SSR guards for Next.js production builds.
  */
 
 class Oscillator {
@@ -49,6 +48,7 @@ class Line {
   }
 
   init(e: any) {
+    if (typeof window === "undefined") return;
     this.spring = e.spring + 0.1 * Math.random() - 0.05;
     this.friction = (window as any).E.friction + 0.01 * Math.random() - 0.005;
     this.nodes = [];
@@ -61,6 +61,7 @@ class Line {
   }
 
   update() {
+    if (typeof window === "undefined") return;
     let e = this.spring;
     let t = this.nodes[0];
     t.vx += ((window as any).pos.x - t.x) * e;
@@ -84,6 +85,7 @@ class Line {
   }
 
   draw() {
+    if (typeof window === "undefined") return;
     const ctx = (window as any).ctx as CanvasRenderingContext2D;
     let e: Node, t: Node, a: number;
     let n = this.nodes[0].x;
@@ -109,6 +111,8 @@ class Line {
 }
 
 export const renderCanvas = function () {
+  if (typeof window === "undefined") return;
+
   const canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
   if (!canvasElement) return;
 
@@ -134,12 +138,13 @@ export const renderCanvas = function () {
   });
 
   function resizeCanvas() {
+    if (typeof window === "undefined") return;
     ctx.canvas.width = window.innerWidth;
     ctx.canvas.height = window.innerHeight;
   }
 
   function render() {
-    if (!(ctx as any).running) return;
+    if (typeof window === "undefined" || !(ctx as any).running) return;
     ctx.globalCompositeOperation = "source-over";
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     ctx.globalCompositeOperation = "lighter";

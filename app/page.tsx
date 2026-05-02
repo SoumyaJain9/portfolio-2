@@ -7,22 +7,18 @@ import ScrollReveal from "../components/ui/ScrollReveal";
 export default function Home() {
   return (
     <main>
-      {/* Hero fades in instantly — no delay */}
       <ScrollReveal direction="none">
         <HeroSection />
       </ScrollReveal>
 
-      {/* About slides up as you scroll to it */}
       <ScrollReveal direction="up" delay={0}>
         <AboutSection />
       </ScrollReveal>
 
-      {/* Skills slides in from left */}
       <ScrollReveal direction="left" delay={0}>
         <SkillsSection />
       </ScrollReveal>
 
-      {/* Projects slides up */}
       <ScrollReveal direction="up" delay={0}>
         <ProjectsSection />
       </ScrollReveal>
