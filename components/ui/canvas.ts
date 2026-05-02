@@ -1,47 +1,97 @@
-function Oscillator(e: any) { (this as any).init(e || {}); }
-(Oscillator as any).prototype = {
-  init(e: any) { this.phase = e.phase||0; this.offset = e.offset||0; this.frequency = e.frequency||0.001; this.amplitude = e.amplitude||1; },
-  update() { this.phase += this.frequency; return (this.value_ = this.offset + Math.sin(this.phase) * this.amplitude); },
-  value() { return this.value_; }
-};
+/**
+ * Refactored to ES6 Classes to satisfy TypeScript strict mode 
+ * and Next.js production build requirements.
+ */
 
-function Line(e: any) { (this as any).init(e || {}); }
-(Line as any).prototype = {
+class Oscillator {
+  phase: number = 0;
+  offset: number = 0;
+  frequency: number = 0.001;
+  amplitude: number = 1;
+  value_: number = 0;
+
+  constructor(e: any = {}) {
+    this.init(e);
+  }
+
   init(e: any) {
-    this.spring = e.spring + 0.1*Math.random() - 0.05;
-    this.friction = (window as any).E.friction + 0.01*Math.random() - 0.005;
+    this.phase = e.phase || 0;
+    this.offset = e.offset || 0;
+    this.frequency = e.frequency || 0.001;
+    this.amplitude = e.amplitude || 1;
+  }
+
+  update() {
+    this.phase += this.frequency;
+    this.value_ = this.offset + Math.sin(this.phase) * this.amplitude;
+    return this.value_;
+  }
+
+  value() {
+    return this.value_;
+  }
+}
+
+class Node {
+  x: number = 0;
+  y: number = 0;
+  vy: number = 0;
+  vx: number = 0;
+}
+
+class Line {
+  spring: number = 0;
+  friction: number = 0;
+  nodes: Node[] = [];
+
+  constructor(e: any = {}) {
+    this.init(e);
+  }
+
+  init(e: any) {
+    this.spring = e.spring + 0.1 * Math.random() - 0.05;
+    this.friction = (window as any).E.friction + 0.01 * Math.random() - 0.005;
     this.nodes = [];
-    for (let n=0; n<(window as any).E.size; n++) {
-      const t = new (Node as any)();
+    for (let n = 0; n < (window as any).E.size; n++) {
+      const t = new Node();
       t.x = (window as any).pos.x;
       t.y = (window as any).pos.y;
       this.nodes.push(t);
     }
-  },
+  }
+
   update() {
-    let e = this.spring, t = this.nodes[0];
+    let e = this.spring;
+    let t = this.nodes[0];
     t.vx += ((window as any).pos.x - t.x) * e;
     t.vy += ((window as any).pos.y - t.y) * e;
-    for (let n, i=0, a=this.nodes.length; i<a; i++) {
+
+    for (let i = 0; i < this.nodes.length; i++) {
       t = this.nodes[i];
-      if (i>0) {
-        n = this.nodes[i-1];
-        t.vx += (n.x-t.x)*e; t.vy += (n.y-t.y)*e;
-        t.vx += n.vx*(window as any).E.dampening;
-        t.vy += n.vy*(window as any).E.dampening;
+      if (i > 0) {
+        const n = this.nodes[i - 1];
+        t.vx += (n.x - t.x) * e;
+        t.vy += (n.y - t.y) * e;
+        t.vx += n.vx * (window as any).E.dampening;
+        t.vy += n.vy * (window as any).E.dampening;
       }
-      t.vx *= this.friction; t.vy *= this.friction;
-      t.x += t.vx; t.y += t.vy; e *= (window as any).E.tension;
+      t.vx *= this.friction;
+      t.vy *= this.friction;
+      t.x += t.vx;
+      t.y += t.vy;
+      e *= (window as any).E.tension;
     }
-  },
+  }
+
   draw() {
-    const ctx = (window as any).ctx;
-    // declare e, t, a outside the loop so they're accessible after it
-    let e: any, t: any, a: number;
+    const ctx = (window as any).ctx as CanvasRenderingContext2D;
+    let e: Node, t: Node, a: number;
     let n = this.nodes[0].x;
     let i = this.nodes[0].y;
+
     ctx.beginPath();
     ctx.moveTo(n, i);
+
     for (a = 1; a < this.nodes.length - 2; a++) {
       e = this.nodes[a];
       t = this.nodes[a + 1];
@@ -49,27 +99,39 @@ function Line(e: any) { (this as any).init(e || {}); }
       i = 0.5 * (e.y + t.y);
       ctx.quadraticCurveTo(e.x, e.y, n, i);
     }
-    // a, e, t are still in scope here
+
     e = this.nodes[a];
     t = this.nodes[a + 1];
     ctx.quadraticCurveTo(e.x, e.y, t.x, t.y);
     ctx.stroke();
     ctx.closePath();
   }
-};
+}
 
-function Node(this: any) { this.x=0; this.y=0; this.vy=0; this.vx=0; }
+export const renderCanvas = function () {
+  const canvasElement = document.getElementById("canvas") as HTMLCanvasElement;
+  if (!canvasElement) return;
 
-export const renderCanvas = function() {
-  const ctx = (document.getElementById("canvas") as HTMLCanvasElement).getContext("2d")!;
+  const ctx = canvasElement.getContext("2d")!;
   (window as any).ctx = ctx;
-  (window as any).pos = {};
+  (window as any).pos = { x: 0, y: 0 };
   (window as any).lines = [];
-  (window as any).E = { friction:0.5, trails:80, size:50, dampening:0.025, tension:0.99 };
+  (window as any).E = {
+    friction: 0.5,
+    trails: 80,
+    size: 50,
+    dampening: 0.025,
+    tension: 0.99,
+  };
   (ctx as any).running = true;
   (ctx as any).frame = 1;
 
-  const f = new (Oscillator as any)({ phase:Math.random()*2*Math.PI, amplitude:85, frequency:0.0015, offset:285 });
+  const f = new Oscillator({
+    phase: Math.random() * 2 * Math.PI,
+    amplitude: 85,
+    frequency: 0.0015,
+    offset: 285,
+  });
 
   function resizeCanvas() {
     ctx.canvas.width = window.innerWidth;
@@ -79,14 +141,19 @@ export const renderCanvas = function() {
   function render() {
     if (!(ctx as any).running) return;
     ctx.globalCompositeOperation = "source-over";
-    ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     ctx.globalCompositeOperation = "lighter";
-    ctx.strokeStyle = `hsla(${Math.round(f.update())},80%,60%,0.025)`;
+    ctx.strokeStyle = `hsla(${Math.round(f.update())}, 80%, 60%, 0.025)`;
     ctx.lineWidth = 10;
-    for (let t=0; t<(window as any).E.trails; t++) {
-      (window as any).lines[t].update();
-      (window as any).lines[t].draw();
+
+    for (let t = 0; t < (window as any).E.trails; t++) {
+      const line = (window as any).lines[t];
+      if (line) {
+        line.update();
+        line.draw();
+      }
     }
+
     (ctx as any).frame++;
     window.requestAnimationFrame(render);
   }
@@ -94,23 +161,30 @@ export const renderCanvas = function() {
   function onMousemove(e: any) {
     function initLines() {
       (window as any).lines = [];
-      for (let i=0; i<(window as any).E.trails; i++)
-        (window as any).lines.push(new (Line as any)({ spring: 0.45+(i/(window as any).E.trails)*0.025 }));
-    }
-    function handleMove(e: any) {
-      if (e.touches) {
-        (window as any).pos.x = e.touches[0].pageX;
-        (window as any).pos.y = e.touches[0].pageY;
-      } else {
-        (window as any).pos.x = e.clientX;
-        (window as any).pos.y = e.clientY;
+      for (let i = 0; i < (window as any).E.trails; i++) {
+        (window as any).lines.push(
+          new Line({
+            spring: 0.45 + (i / (window as any).E.trails) * 0.025,
+          })
+        );
       }
-      e.preventDefault();
     }
+
+    function handleMove(event: any) {
+      if (event.touches) {
+        (window as any).pos.x = event.touches[0].pageX;
+        (window as any).pos.y = event.touches[0].pageY;
+      } else {
+        (window as any).pos.x = event.clientX;
+        (window as any).pos.y = event.clientY;
+      }
+    }
+
     document.removeEventListener("mousemove", onMousemove);
     document.removeEventListener("touchstart", onMousemove);
     document.addEventListener("mousemove", handleMove);
-    document.addEventListener("touchmove", handleMove);
+    document.addEventListener("touchmove", handleMove, { passive: false });
+    
     handleMove(e);
     initLines();
     render();

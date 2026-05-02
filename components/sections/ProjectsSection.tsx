@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { renderCanvas } from "@/components/ui/canvas";
+import { renderCanvas } from "../ui/canvas";
 
 const projects = [
   {
