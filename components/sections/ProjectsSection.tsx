@@ -74,6 +74,16 @@ export default function ProjectsSection() {
     <section className="relative w-full min-h-screen flex flex-col items-center justify-center overflow-hidden py-24" style={{ background: "#060d14" }}>
       <canvas id="canvas" className="pointer-events-none absolute inset-0 w-full h-full" style={{ zIndex: 5 }} />
       <div className="relative z-10 w-full max-w-5xl" style={{ padding: "0 48px" }}>
+
+        <div style={{ marginBottom: "64px", textAlign: "center" }}>
+          <p style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.2em", color: "#3a5060", marginBottom: "16px" }}>
+            Selected Work
+          </p>
+          <h2 className="font-display italic" style={{ fontSize: "clamp(40px, 6vw, 80px)", color: "#ffffff", lineHeight: 1.1 }}>
+            Projects
+          </h2>
+        </div>
+
         {projects.map((project, i) => (
           <ProjectRow key={i} project={project} index={i} isLast={i === projects.length - 1} />
         ))}
