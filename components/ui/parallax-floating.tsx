@@ -1,6 +1,6 @@
 "use client"
 
-import {
+import React, {
   createContext,
   ReactNode,
   useCallback,
@@ -37,7 +37,7 @@ const Floating = ({
   const elementsMap = useRef(
     new Map<string, { element: HTMLDivElement; depth: number; currentPosition: { x: number; y: number } }>()
   )
-  const mousePositionRef = useMousePositionRef(containerRef)
+  const mousePositionRef = useMousePositionRef(containerRef as React.RefObject<HTMLElement>)
 
   const registerElement = useCallback(
     (id: string, element: HTMLDivElement, depth: number) => {
