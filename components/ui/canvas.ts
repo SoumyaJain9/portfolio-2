@@ -36,16 +36,25 @@ function Line(e: any) { (this as any).init(e || {}); }
   },
   draw() {
     const ctx = (window as any).ctx;
-    let e, t, n=this.nodes[0].x, i=this.nodes[0].y;
-    ctx.beginPath(); ctx.moveTo(n,i);
-    for (let a=1, o=this.nodes.length-2; a<o; a++) {
-      e=this.nodes[a]; t=this.nodes[a+1];
-      n=0.5*(e.x+t.x); i=0.5*(e.y+t.y);
-      ctx.quadraticCurveTo(e.x,e.y,n,i);
+    // declare e, t, a outside the loop so they're accessible after it
+    let e: any, t: any, a: number;
+    let n = this.nodes[0].x;
+    let i = this.nodes[0].y;
+    ctx.beginPath();
+    ctx.moveTo(n, i);
+    for (a = 1; a < this.nodes.length - 2; a++) {
+      e = this.nodes[a];
+      t = this.nodes[a + 1];
+      n = 0.5 * (e.x + t.x);
+      i = 0.5 * (e.y + t.y);
+      ctx.quadraticCurveTo(e.x, e.y, n, i);
     }
-    e=this.nodes[a]; t=this.nodes[a+1];
-    ctx.quadraticCurveTo(e.x,e.y,t.x,t.y);
-    ctx.stroke(); ctx.closePath();
+    // a, e, t are still in scope here
+    e = this.nodes[a];
+    t = this.nodes[a + 1];
+    ctx.quadraticCurveTo(e.x, e.y, t.x, t.y);
+    ctx.stroke();
+    ctx.closePath();
   }
 };
 
