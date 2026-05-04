@@ -23,6 +23,15 @@ const projects = [
     stack: ["React", "Express", "PostgreSQL", "Gemini AI"],
   },
   {
+    title: "Sephora Clone",
+    tag: "E-Commerce · React",
+    description: "Full frontend clone of Sephora with Firebase auth, protected routes, wishlist, and add-to-bag functionality.",
+    color: "#e8a0b4",
+    github: "https://github.com/SoumyaJain9/sephora-clone",
+    live: "https://sephora-clone-gamma.vercel.app",
+    stack: ["React", "Firebase", "React Router", "CSS"],
+  },
+  {
     title: "DressUp Game",
     tag: "Game · React",
     description: "Interactive dress-up game built for fun.",
@@ -36,30 +45,44 @@ const projects = [
 function ProjectRow({ project, index, isLast }: any) {
   return (
     <div style={{
-      display: "grid", gridTemplateColumns: "48px 1fr auto", alignItems: "start",
-      gap: "32px", padding: "48px 0", borderTop: "1px solid #1a2a3a",
+      padding: "40px 0",
+      borderTop: "1px solid #1a2a3a",
       ...(isLast ? { borderBottom: "1px solid #1a2a3a" } : {}),
     }}>
-      <span style={{ fontStyle: "italic", fontSize: "12px", color: "#3a5060", paddingTop: "10px" }}>
-        0{index + 1}
-      </span>
-      <div>
-        <div style={{ display: "flex", alignItems: "baseline", gap: "20px", marginBottom: "14px" }}>
-          <h3 className="font-display italic" style={{ fontSize: "clamp(28px, 3.5vw, 42px)", color: "#ffffff" }}>
-            {project.title}
-          </h3>
-          <span style={{ fontSize: "11px", textTransform: "uppercase", color: project.color }}>
-            {project.tag}
-          </span>
-        </div>
-        <p style={{ fontSize: "15px", lineHeight: 1.8, color: "#8a9fb5", maxWidth: "560px" }}>
+      {/* Top row: number + title + tag */}
+      <div style={{ display: "flex", alignItems: "baseline", gap: "16px", marginBottom: "12px" }}>
+        <span style={{ fontStyle: "italic", fontSize: "12px", color: "#3a5060", minWidth: "28px" }}>
+          0{index + 1}
+        </span>
+        <h3 className="font-display italic" style={{ fontSize: "clamp(24px, 3vw, 38px)", color: "#ffffff", margin: 0 }}>
+          {project.title}
+        </h3>
+        <span style={{ fontSize: "11px", textTransform: "uppercase", color: project.color, letterSpacing: "0.08em" }}>
+          {project.tag}
+        </span>
+      </div>
+
+      {/* Bottom row: description + buttons */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingLeft: "44px", gap: "24px" }}>
+        <p style={{ fontSize: "15px", lineHeight: 1.7, color: "#8a9fb5", margin: 0, maxWidth: "560px" }}>
           {project.description}
         </p>
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: "10px", alignItems: "flex-end" }}>
-        <a href={project.github} target="_blank" rel="noopener noreferrer" style={{ border: `1px solid ${project.color}`, color: project.color, padding: "10px 22px", borderRadius: "100px", textDecoration: "none" }}>
-          GitHub →
-        </a>
+        <div style={{ display: "flex", gap: "10px", flexShrink: 0 }}>
+          {project.live && (
+            <a href={project.live} target="_blank" rel="noopener noreferrer" style={{
+              background: project.color, color: "#060d14", padding: "9px 20px",
+              borderRadius: "100px", textDecoration: "none", fontSize: "13px", fontWeight: 600,
+            }}>
+              Live ↗
+            </a>
+          )}
+          <a href={project.github} target="_blank" rel="noopener noreferrer" style={{
+            border: `1px solid ${project.color}`, color: project.color, padding: "9px 20px",
+            borderRadius: "100px", textDecoration: "none", fontSize: "13px",
+          }}>
+            GitHub →
+          </a>
+        </div>
       </div>
     </div>
   );

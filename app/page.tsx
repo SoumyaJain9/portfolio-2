@@ -6,22 +6,34 @@ import ScrollReveal from "../components/ui/ScrollReveal";
 
 export default function Home() {
   return (
-    <main>
-      <ScrollReveal direction="none">
-        <HeroSection />
-      </ScrollReveal>
+    <main style={{
+      height: "100vh",
+      overflowY: "scroll",
+      scrollSnapType: "y mandatory",
+    }}>
+      <div style={{ scrollSnapAlign: "start", scrollSnapStop: "always", height: "100vh", overflow: "hidden" }}>
+        <ScrollReveal direction="none">
+          <HeroSection />
+        </ScrollReveal>
+      </div>
 
-      <ScrollReveal direction="up" delay={0}>
-        <AboutSection />
-      </ScrollReveal>
+      <div style={{ scrollSnapAlign: "start", scrollSnapStop: "always", height: "100vh", overflow: "hidden" }}>
+        <ScrollReveal direction="up" delay={0}>
+          <AboutSection />
+        </ScrollReveal>
+      </div>
 
-      <ScrollReveal direction="left" delay={0}>
-        <SkillsSection />
-      </ScrollReveal>
+      <div style={{ scrollSnapAlign: "start", scrollSnapStop: "always", height: "100vh", overflow: "hidden" }}>
+        <ScrollReveal direction="left" delay={0}>
+          <SkillsSection />
+        </ScrollReveal>
+      </div>
 
-      <ScrollReveal direction="up" delay={0}>
-        <ProjectsSection />
-      </ScrollReveal>
+      <div style={{ scrollSnapAlign: "start", scrollSnapStop: "always", minHeight: "100vh", overflow: "auto" }}>
+        <ScrollReveal direction="up" delay={0}>
+          <ProjectsSection />
+        </ScrollReveal>
+      </div>
     </main>
   );
 }

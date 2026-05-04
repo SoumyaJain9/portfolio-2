@@ -144,14 +144,7 @@ export default function AboutSection() {
               alignItems: "flex-end",
             }}
           >
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                transform: `translate(${mousePos.x * 0.3}px, ${mousePos.y * 0.3}px)`,
-                transition: "transform 0.3s ease",
-              }}
-            >
+            <div style={{ width: "100%", height: "100%" }}>
               <Suspense
                 fallback={
                   <div className="w-full h-full flex items-center justify-center">
@@ -162,6 +155,13 @@ export default function AboutSection() {
                 <Spline
                   scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
                   style={{ width: "100%", height: "100%" }}
+                  onLoad={(spline) => {
+                    const canvas = spline.canvas;
+                    if (canvas) {
+                      canvas.addEventListener("mousedown", (e) => e.preventDefault());
+                      canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+                    }
+                  }}
                 />
               </Suspense>
             </div>

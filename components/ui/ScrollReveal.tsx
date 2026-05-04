@@ -4,7 +4,7 @@ import { useEffect, useRef, ReactNode } from "react";
 
 interface ScrollRevealProps {
   children: ReactNode;
-  delay?: number; // ms, for staggering sections
+  delay?: number;
   direction?: "up" | "left" | "right" | "none";
 }
 
@@ -17,9 +17,9 @@ export default function ScrollReveal({
 
   const getInitialTransform = () => {
     switch (direction) {
-      case "up":    return "translateY(40px)";
-      case "left":  return "translateX(-40px)";
-      case "right": return "translateX(40px)";
+      case "up":    return "translateY(60px)";
+      case "left":  return "translateX(-60px)";
+      case "right": return "translateX(60px)";
       case "none":  return "none";
     }
   };
@@ -28,17 +28,17 @@ export default function ScrollReveal({
     const el = ref.current;
     if (!el) return;
 
-    // Set initial hidden state
     el.style.opacity = "0";
     el.style.transform = getInitialTransform();
-    el.style.transition = `opacity 0.7s ease ${delay}ms, transform 0.7s ease ${delay}ms`;
+    // This cubic-bezier gives the weighted/inertia feeling
+    el.style.transition = `opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, transform 1.1s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           el.style.opacity = "1";
           el.style.transform = "translate(0, 0)";
-          observer.disconnect(); // animate once only
+          observer.disconnect();
         }
       },
       { threshold: 0.1 }
@@ -48,5 +48,5 @@ export default function ScrollReveal({
     return () => observer.disconnect();
   }, [delay, direction]);
 
-  return <div ref={ref}>{children}</div>;
+  return <div ref={ref} style={{ height: "100%" }}>{children}</div>;
 }
